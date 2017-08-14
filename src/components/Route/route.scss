@@ -1,0 +1,37 @@
+.route {
+  h2 {
+    font-size: 25px;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    margin-bottom: 21px;
+    margin-top: 2em;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    background-color: #fdfdfd;
+  }
+
+  table {
+    th {
+      text-align: left;
+      font-size: 12px;
+      padding: 5px 10px;
+      border-bottom: 1px solid #ccc;
+      vertical-align: bottom;
+    }
+
+    tr:nth-child(even) > td {
+      background-color: #fbfcfd;
+    }
+
+    td {
+      font-size: 14px;
+      padding: 10px;
+    }
+  }
+
+  code.endpoint {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 3px;
+    border-radius: 3px;
+  }
+}

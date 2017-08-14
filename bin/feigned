@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+
+const { spawn } = require('child_process')
+const { join } = require('path')
+const fs = require('fs')
+
+var debug = false
+if (!fs.existsSync(join(process.cwd(), 'docs'))) {
+  fs.mkdirSync(join(process.cwd(), 'docs'))
+  fs.mkdirSync(join(process.cwd(), 'docs/static'))
+  fs.mkdirSync(join(process.cwd(), 'docs/endpoints'))
+}
+
+spawn('webpack', ['--config', join(__dirname, '..', 'config/webpack.js')], {
+  stdio: 'inherit'
+})

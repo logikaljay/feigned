@@ -1,0 +1,102 @@
+{
+  "name": "Users",
+  "description": "",
+  "routes": [
+    {
+      "name": "List users",
+      "description": "Get limited information about all users",
+      "endpoint": "/api/v1/users",
+      "method": "GET",
+      "responses": [
+        {
+          "code": 200,
+          "response": { "status": "ok", "users": [] }
+        },
+        {
+          "code": 401,
+          "name": "Unauthorized",
+          "response": { "status": "fail", "error": "unauthenticated" },
+          "condition": "!req.headers.hasOwnProperty('authorization')"
+        }
+      ],
+      "headers": {
+        "Authorization": "Bearer token"
+      }
+    },
+    {
+      "name": "Get specific user details",
+      "description": "Get detailed information about a specific user",
+      "endpoint": "/api/v1/users/:userId",
+      "method": "GET",
+      "query": {
+        "userId": {
+          "type": "PropTypes.string",
+          "description": "The ID of the user that you want specific information for"
+        }
+      },
+      "responses": [
+        {
+          "code": 200,
+          "response": { "status": "ok", "user": {} }
+        },
+        {
+          "code": 400,
+          "name": "Bad Request",
+          "response": { "status": "fail", "error": "bad request" },
+          "condition": "req.params.userId.indexOf('user|') === -1"
+        },
+        {
+          "code": 401,
+          "name": "Unauthorized",
+          "response": { "status": "fail", "error": "unauthenticated" },
+          "condition": "!req.headers.hasOwnProperty('authorization')"
+        }
+      ],
+      "headers": {
+        "Authorization": "Bearer token"
+      }
+    },
+    {
+      "name": "Create a user",
+      "description": "Create a user",
+      "endpoint": "/api/v1/users",
+      "method": "POST",
+      "body": {
+        "name": "PropTypes.string",
+        "email": "PropTypes.string",
+        "status": "PropTypes.oneOf(['tenant', 'agent', 'owner'])",
+        "password": "PropTypes.string",
+        "active": "PropTypes.bool",
+        "levels": "PropTypes.arrayOf(PropTypes.number)"
+      },
+      "responses": [
+        {
+          "code": 200,
+          "response": { "status": "ok" }
+        },
+        {
+          "code": 400,
+          "name": "Bad Request",
+          "response": { "status": "fail", "error": "bad request" },
+          "condition": {
+            "name": "PropTypes.string",
+            "email": "PropTypes.string",
+            "status": "PropTypes.oneOf(['tenant', 'agent', 'owner'])",
+            "password": "PropTypes.string",
+            "active": "PropTypes.bool",
+            "levels": "PropTypes.arrayOf(PropTypes.number)"
+          }
+        },
+        {
+          "code": 401,
+          "name": "Unauthorized",
+          "response": { "status": "fail", "error": "unauthenticated" },
+          "condition": "!req.headers.hasOwnProperty('authorization')"
+        }
+      ],
+      "headers": {
+        "Authorization": "Bearer token"
+      }
+    }
+  ]
+}

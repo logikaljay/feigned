@@ -1,0 +1,133 @@
+#!/usr/bin/env node
+
+const { join } = require('path')
+const fs = require('fs')
+
+const express = require('express')
+const { json } = require('body-parser')
+const PropTypes = require('typed-prop-types')
+
+const { validate } = require('./helpers')
+
+var port = 8080
+
+// start mock
+var app = express()
+app.use(json())
+
+// discover all endpoints
+var endpoints = fs.readdirSync(join(process.cwd(), 'docs/endpoints'))
+endpoints.forEach(endpoint => {
+  var path = join(process.cwd(), 'docs', 'endpoints', endpoint)
+  var routes = {}
+  try {
+    routes = require(path)
+
+    console.log(`  [INFO] Loading routes from ${endpoint}:`)
+  } catch (err) {
+    console.log(`  [FAIL] Could not load ${endpoint}`)
+
+    if (debug) {
+      console.log(err)
+    }
+  }
+
+  var errors = validate.bind(endpoint)(routes.routes)
+  if (errors.length > 0) {
+    console.log(errors.map(e => `  [ERR] ${e}`).join('\n'))
+  } else {
+    if (typeof routes.push === 'undefined') {
+      routes = routes.routes
+    }
+
+    routes.forEach(route => {
+      console.log(`   * ${route.method} ${route.endpoint}`)
+      app[route.method.toLowerCase()](route.endpoint, (req, res, next) => {
+        var success = null
+        for (var r in route.responses) {
+          var response = route.responses[r]
+          if (
+            response.hasOwnProperty('condition') &&
+            typeof response.condition === 'string' &&
+            eval(response.condition)
+          ) {
+            res.status(response.code).json(response.response)
+            return
+          } else if (
+            response.hasOwnProperty('condition') &&
+            typeof response.condition === 'object'
+          ) {
+            // iterate over properties in response.condition, making sure each is present on the body of the request
+            var valid = true
+            for (var p in response.condition) {
+              var requiredType = eval(response.condition[p])
+              var { type, options } = requiredType || {}
+              type = type === 'bool' ? 'boolean' : type
+
+              if (!req.body.hasOwnProperty(p)) {
+                valid = false
+              }
+
+              // validate PropTypes.oneOf
+              if (
+                req.body.hasOwnProperty(p) &&
+                type === 'oneOf' &&
+                options !== 'undefined' &&
+                options.indexOf(req.body[p]) === -1
+              ) {
+                valid = false
+              }
+
+              // validate PropTypes.arrayOf
+              if (
+                req.body.hasOwnProperty(p) &&
+                type === 'arrayOf' &&
+                options !== 'undefined'
+              ) {
+                if (
+                  req.body[p].filter(prop => typeof prop !== options.type)
+                    .length > 0
+                ) {
+                  valid = false
+                }
+              }
+
+              // validate primitive types
+              if (
+                req.body.hasOwnProperty(p) &&
+                typeof req.body[p] !== type &&
+                typeof options === 'undefined'
+              ) {
+                if (
+                  type === 'array' &&
+                  typeof req.body[p].push === 'function'
+                ) {
+                  // do nothing - this is valid
+                } else {
+                  valid = false
+                  console.log(typeof req.body[p], type)
+                }
+              }
+            }
+
+            if (!valid) {
+              res.status(response.code).json(response.response)
+              return
+            }
+          } else if (response.code === 200) {
+            success = response
+          }
+        }
+
+        if (success) {
+          res.status(success.code).json(success.response)
+        }
+      })
+    })
+  }
+})
+
+app.listen(port, () => {
+  console.log(`
+  [INFO] Mock ready and listening on http://localhost:${port}`)
+})
