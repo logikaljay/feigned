@@ -38,7 +38,7 @@ $ npx feigned doc
       "responses": [
         {
           "code": 200,
-          "response": { "status": "ok", "users": [] }
+          "response": { "status": "ok", "users": [ ... ] }
         },
         {
           "code": 401,
@@ -58,6 +58,7 @@ $ npx feigned doc
 ## TODO
 * [ ] Test feigned when installed globally, fix any pathing issues to documents or webpack
 * [ ] Set up bin correctly so that the mock
+* [ ] Write proper documentation for the endpoints (ironic right?)
 * [ ] Build a postman like UI that will author the JSON files
 * [ ] Allow the postman like UI tool the ability to start/stop the mock server
 * [ ] Format the doc output better
