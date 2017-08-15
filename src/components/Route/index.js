@@ -29,10 +29,6 @@ export default class extends React.PureComponent {
   getCommandForLanguage = lang => {
     switch (lang) {
       case 'curl':
-        // var body = Object.keys(this.props.body || {}).map(b => {
-        //   return { [b]: this.typeFor(eval(this.props.body[b])) }
-        // })
-
         var body = {}
         Object.keys(this.props.body || {}).forEach(key => {
           body[key] = this.typeFor(eval(this.props.body[key]))
