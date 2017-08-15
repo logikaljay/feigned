@@ -10,7 +10,36 @@
       "responses": [
         {
           "code": 200,
-          "response": { "status": "ok", "users": [] }
+          "response": {
+            "status": "ok",
+            "users": [
+              {
+                "id": "e22c74b0-4f19-4294-82f8-07b46bf7cc39",
+                "name": "Jay",
+                "email": "logikal@gmail.com",
+                "permissions": ["*"],
+                "lastLoginDate": 1502826541213,
+                "status": "owner",
+                "levels": [1, 2]
+              },
+              {
+                "id": "e0759d43-b7ed-405d-939f-329f15078153",
+                "name": "Example",
+                "email": "ex@ample.com",
+                "permissions": [
+                  "create:news",
+                  "edit:news",
+                  "delete:news",
+                  "read:comments",
+                  "edit:comments",
+                  "delete:comments"
+                ],
+                "lastLoginDate": 1502814724415,
+                "status": "admin",
+                "levels": [1]
+              }
+            ]
+          }
         },
         {
           "code": 401,
@@ -37,7 +66,18 @@
       "responses": [
         {
           "code": 200,
-          "response": { "status": "ok", "user": {} }
+          "response": {
+            "status": "ok",
+            "user": {
+              "id": "e22c74b0-4f19-4294-82f8-07b46bf7cc39",
+              "name": "Jay",
+              "email": "logikal@gmail.com",
+              "permissions": ["*"],
+              "lastLoginDate": 1502826541213,
+              "status": "owner",
+              "levels": [1, 2]
+            }
+          }
         },
         {
           "code": 400,
@@ -64,7 +104,7 @@
       "body": {
         "name": "PropTypes.string",
         "email": "PropTypes.string",
-        "status": "PropTypes.oneOf(['tenant', 'agent', 'owner'])",
+        "status": "PropTypes.oneOf(['admin', 'user', 'owner'])",
         "password": "PropTypes.string",
         "active": "PropTypes.bool",
         "levels": "PropTypes.arrayOf(PropTypes.number)"
