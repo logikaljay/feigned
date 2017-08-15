@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+console.log(`
+  Usage:
+    help                   Shows this message
+    init                   Set up folder structure and example JSON endpoint
+    build                  Build static documentation
+    mock                   Start the mock server
+
+  Coming soon:
+    dev                    Start dev environment for authoring JSON endpoints
+`)

@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+
+const { spawn } = require('child_process')
+const { join } = require('path')
+const fs = require('fs')
+
+// init
+var debug = false
+if (!fs.existsSync(join(process.cwd(), 'docs'))) {
+  fs.mkdirSync(join(process.cwd(), 'docs'))
+  fs.mkdirSync(join(process.cwd(), 'docs/static'))
+  fs.mkdirSync(join(process.cwd(), 'docs/endpoints'))
+
+  var from = join(__dest, '..', 'docs', 'endpoints', 'users.json')
+  var to = join(process.cwd(), 'docs', 'endpoints', 'users.json')
+  var data = fs.readFileSync(from).toString()
+  fs.writeFileSync(to, data, 'utf8')
+
+  console.log(`
+  Initialized feigned structure:
+    * ./docs/
+    * ./docs/endpoints/
+    * ./docs/endpoints/users.json
+    * ./docs/static`)
+} else {
+  console.log(`
+  ./docs folder already exists - aborting.`)
+}

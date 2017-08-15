@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+const { spawn } = require('child_process')
+const { join } = require('path')
+const fs = require('fs')
+
+// init
+var webpack = join(__dirname, '..', 'node_modules/.bin', 'webpack')
+var config = join(__dirname, '..', 'config', 'webpack.js')
+spawn(webpack, ['--config', config], { stdio: 'inherit', customFds: [0, 1, 2] })
